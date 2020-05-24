@@ -84,17 +84,17 @@ Este archivo permite configurar parámetros del servidor, ver ejemplos en config
 Tambien podemos usar docker en este repositorio, ejecutamos :
 
 ```bash
-docker build -t ecommerce-catalog-java .
-docker run -d --name ecommerce-catalog-java --network host ecommerce-catalog-java
+docker build -t dev-catalog-java .
+docker run -d --name dev-catalog-java --network host dev-catalog-java
 ```
 
 El contenedor se puede parar usando :
 
 ```bash
-docker stop ecommerce-catalog-java
+docker stop dev-catalog-java
 ```
 Se vuelve a levantar usando 
 
 ```bash
-docker start ecommerce-catalog-java
+docker start dev-catalog-java
 ```
