@@ -3,14 +3,14 @@
 
 Microservicio de Catálogo
 
-- [Art_culos](#art_culos)
+- [Articulos](#articulos)
+	- [Buscar Artículo](#buscar-artículo)
+	
+- [Artículos](#artículos)
 	- [Actualizar Artículo](#actualizar-artículo)
 	- [Buscar Artículo](#buscar-artículo)
 	- [Crear Artículo](#crear-artículo)
 	- [Eliminar Artículo](#eliminar-artículo)
-	
-- [Articulos](#articulos)
-	- [Buscar Artículo](#buscar-artículo)
 	
 - [RabbitMQ](#rabbitmq)
 	- [Orden Creada](#orden-creada)
@@ -25,7 +25,67 @@ Microservicio de Catálogo
 	
 
 
-# <a name='art_culos'></a> Art_culos
+# <a name='articulos'></a> Articulos
+
+## <a name='buscar-artículo'></a> Buscar Artículo
+[Back to top](#top)
+
+
+
+	GET /v1/articles/:articleId
+
+
+
+
+
+### Success Response
+
+Respuesta
+
+```
+HTTP/1.1 200 OK
+{
+  "_id": "{id de articulo}"
+  "name": "{nombre del articulo}",
+  "description": "{descripción del articulo}",
+  "image": "{id de imagen}",
+  "price": {precio actual},
+  "stock": {stock actual}
+  "updated": {fecha ultima actualización}
+  "created": {fecha creación}
+  "enabled": {activo}
+}
+```
+
+
+### Error Response
+
+400 Bad Request
+
+```
+HTTP/1.1 400 Bad Request
+{
+    "path" : "{Nombre de la propiedad}",
+    "message" : "{Motivo del error}"
+}
+```
+400 Bad Request
+
+```
+HTTP/1.1 400 Bad Request
+{
+    "error" : "{Motivo del error}"
+}
+```
+500 Server Error
+
+```
+HTTP/1.1 500 Server Error
+{
+    "error" : "{Motivo del error}"
+}
+```
+# <a name='artículos'></a> Artículos
 
 ## <a name='actualizar-artículo'></a> Actualizar Artículo
 [Back to top](#top)
@@ -54,6 +114,7 @@ Header Autorización
 ```
 Authorization=bearer {token}
 ```
+
 
 ### Success Response
 
@@ -113,6 +174,7 @@ HTTP/1.1 500 Server Error
 <p>Busca artículos por nombre o descripción</p>
 
 	GET /v1/articles/search/:criteria
+
 
 
 
@@ -195,6 +257,7 @@ Header Autorización
 Authorization=bearer {token}
 ```
 
+
 ### Success Response
 
 Respuesta
@@ -264,6 +327,7 @@ Header Autorización
 Authorization=bearer {token}
 ```
 
+
 ### Success Response
 
 200 Respuesta
@@ -305,65 +369,6 @@ HTTP/1.1 500 Server Error
     "error" : "{Motivo del error}"
 }
 ```
-# <a name='articulos'></a> Articulos
-
-## <a name='buscar-artículo'></a> Buscar Artículo
-[Back to top](#top)
-
-
-
-	GET /v1/articles/:articleId
-
-
-
-
-### Success Response
-
-Respuesta
-
-```
-HTTP/1.1 200 OK
-{
-  "_id": "{id de articulo}"
-  "name": "{nombre del articulo}",
-  "description": "{descripción del articulo}",
-  "image": "{id de imagen}",
-  "price": {precio actual},
-  "stock": {stock actual}
-  "updated": {fecha ultima actualización}
-  "created": {fecha creación}
-  "enabled": {activo}
-}
-```
-
-
-### Error Response
-
-400 Bad Request
-
-```
-HTTP/1.1 400 Bad Request
-{
-    "path" : "{Nombre de la propiedad}",
-    "message" : "{Motivo del error}"
-}
-```
-400 Bad Request
-
-```
-HTTP/1.1 400 Bad Request
-{
-    "error" : "{Motivo del error}"
-}
-```
-500 Server Error
-
-```
-HTTP/1.1 500 Server Error
-{
-    "error" : "{Motivo del error}"
-}
-```
 # <a name='rabbitmq'></a> RabbitMQ
 
 ## <a name='orden-creada'></a> Orden Creada
@@ -372,6 +377,7 @@ HTTP/1.1 500 Server Error
 <p>Consume de mensajes order-placed desde Order con el topic &quot;order_placed&quot;.</p>
 
 	TOPIC order/order-placed
+
 
 
 
@@ -423,6 +429,7 @@ Mensaje
 
 
 
+
 ## <a name='validación-de-artículos'></a> Validación de Artículos
 [Back to top](#top)
 
@@ -449,6 +456,7 @@ Mensaje
 
 
 
+
 ## <a name='logout'></a> Logout
 [Back to top](#top)
 
@@ -471,6 +479,7 @@ Mensaje
 
 
 
+
 # <a name='rabbitmq_post'></a> RabbitMQ_POST
 
 ## <a name='validación-de-artículos'></a> Validación de Artículos
@@ -479,6 +488,7 @@ Mensaje
 <p>Enviá de mensajes article-exist desde cart. Valida artículos</p>
 
 	DIRECT cart/article-exist
+
 
 
 

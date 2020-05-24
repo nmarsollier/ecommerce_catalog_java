@@ -6,6 +6,8 @@ import utils.db.MongoStore;
 import utils.errors.ErrorHandler;
 import utils.server.CorsFilter;
 import utils.server.Environment;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class Server {
 
@@ -26,6 +28,9 @@ public class Server {
         Spark.get("/v1/articles/:articleId", (req, res) -> RestController.getArticle(req, res));
         Spark.delete("/v1/articles/:articleId", (req, res) -> RestController.deleteArticle(req, res));
         Spark.get("/v1/articles/search/:criteria", (req, res) -> RestController.searchArticles(req, res));
+
+        Logger.getLogger("Validator").log(Level.INFO,
+        "Order Service escuchando en el puerto : " + Environment.getEnv().serverPort);
 
         RabbitController.init();
     }

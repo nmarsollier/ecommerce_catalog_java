@@ -1,0 +1,7 @@
+.settings
+build
+bin
+.gradle
+.dockerignore
+Dockerfile
+Dockerfile.prod

@@ -77,3 +77,24 @@ Esto nos genera una carpeta www con la documentación, esta carpeta debe estar p
 ## Archivo config.json
 
 Este archivo permite configurar parámetros del servidor, ver ejemplos en config-example.json.
+
+
+## Docker
+
+Tambien podemos usar docker en este repositorio, ejecutamos :
+
+```bash
+docker build -t ecommerce-catalog-java .
+docker run -d --name ecommerce-catalog-java --network host ecommerce-catalog-java
+```
+
+El contenedor se puede parar usando :
+
+```bash
+docker stop ecommerce-catalog-java
+```
+Se vuelve a levantar usando 
+
+```bash
+docker start ecommerce-catalog-java
+```
