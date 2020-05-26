@@ -1,11 +1,5 @@
 package utils.server;
 
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-
-import com.google.gson.Gson;
-import com.google.gson.stream.JsonReader;
-
 public class Environment {
     static EnvData envData = new EnvData();
 
@@ -16,32 +10,25 @@ public class Environment {
     static {
         envData = new EnvData();
 
-        try {
-            Gson gson = new Gson();
-            JsonReader reader;
-            reader = new JsonReader(new FileReader("config.json"));
-            EnvData data = gson.fromJson(reader, EnvData.class);
-
-            if (data.databaseUrl != null) {
-                envData.databaseUrl = data.databaseUrl;
-            }
-            if (data.serverPort != null) {
-                envData.serverPort = data.serverPort;
-            }
-            if (data.securityServerUrl != null) {
-                envData.securityServerUrl = data.securityServerUrl;
-            }
-            if (data.rabbitServerUrl != null) {
-                envData.rabbitServerUrl = data.rabbitServerUrl;
-            }
-            if (data.staticLocation != null) {
-                envData.staticLocation = data.staticLocation;
-            }
-
-            System.out.println("Archivo config.json cargado.");
-        } catch (FileNotFoundException e) {
-            System.out.println("Archivo config.json no encontrado.");
+        String port = System.getenv("PORT");
+        if (port != null && port.length() > 0 && Integer.parseInt(port) != 0) {
+            envData.serverPort = Integer.parseInt(port);
+        }
+        String authService = System.getenv("AUTH_SERVICE_URL");
+        if (authService != null && authService.length() > 0) {
+            envData.securityServerUrl = authService;
+        }
+        String rabbitUrl = System.getenv("RABBIT_URL");
+        if (rabbitUrl != null && rabbitUrl.length() > 0) {
+            envData.rabbitServerUrl = rabbitUrl;
+        }
+        String mongoUrl = System.getenv("MONGO_URL");
+        if (mongoUrl != null && mongoUrl.length() > 0) {
+            envData.databaseUrl = mongoUrl;
+        }
+        String wwwPath = System.getenv("WWW_PATH");
+        if (wwwPath != null && wwwPath.length() > 0) {
+            envData.staticLocation = wwwPath;
         }
     }
-
 }

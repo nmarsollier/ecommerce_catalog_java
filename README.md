@@ -74,18 +74,25 @@ apidoc-markdown2 -p www -o README-API.md
 
 Esto nos genera una carpeta www con la documentación, esta carpeta debe estar presente desde donde se ejecute el proyecto, aunque se puede configurar desde el archivo de properties.
 
-## Archivo config.json
+## Configuración del servidor
+
+Este servidor se configura con variables de entorno
+
+PORT = Puerto del servidor (3002)
+AUTH_SERVICE_URL = Servidor Auth (http://localhost:3000)
+RABBIT_URL = Rabbit (localhost)
+MONGO_URL = Url de mongo (localhost)
+WWW_PATH = Path documentación (www)
 
 Este archivo permite configurar parámetros del servidor, ver ejemplos en config-example.json.
 
-
 ## Docker
 
-Tambien podemos usar docker en este repositorio, ejecutamos :
+También podemos usar docker en este repositorio, ejecutamos :
 
 ```bash
 docker build -t dev-catalog-java -f Dockerfile.dev .
-docker run -d --name dev-catalog-java --network host dev-catalog-java
+docker run -d --name dev-catalog-java -p 3002:3002 dev-catalog-java
 ```
 
 El contenedor se puede parar usando :
@@ -93,7 +100,8 @@ El contenedor se puede parar usando :
 ```bash
 docker stop dev-catalog-java
 ```
-Se vuelve a levantar usando 
+
+Se vuelve a levantar usando
 
 ```bash
 docker start dev-catalog-java
