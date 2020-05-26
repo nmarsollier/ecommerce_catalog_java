@@ -74,7 +74,7 @@ apidoc-markdown2 -p www -o README-API.md
 
 Esto nos genera una carpeta www con la documentación, esta carpeta debe estar presente desde donde se ejecute el proyecto, aunque se puede configurar desde el archivo de properties.
 
-## Archivo config.json
+## Archivo config.json
 
 Este archivo permite configurar parámetros del servidor, ver ejemplos en config-example.json.
 
@@ -84,7 +84,7 @@ Este archivo permite configurar parámetros del servidor, ver ejemplos en config
 Tambien podemos usar docker en este repositorio, ejecutamos :
 
 ```bash
-docker build -t dev-catalog-java .
+docker build -t dev-catalog-java -f Dockerfile.dev .
 docker run -d --name dev-catalog-java --network host dev-catalog-java
 ```
 

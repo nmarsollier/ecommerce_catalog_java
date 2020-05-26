@@ -1,0 +1,12 @@
+# Docker para desarrollo
+FROM gradle:6.4.1-jdk11
+
+
+COPY . /app
+WORKDIR /app
+RUN gradle build
+
+# Puerto de catalog service
+EXPOSE 3002
+
+CMD ["gradle","run"]
