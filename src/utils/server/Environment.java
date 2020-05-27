@@ -10,7 +10,7 @@ public class Environment {
     static {
         envData = new EnvData();
 
-        String port = System.getenv("PORT");
+        String port = System.getenv("SERVER_PORT");
         if (port != null && port.length() > 0 && Integer.parseInt(port) != 0) {
             envData.serverPort = Integer.parseInt(port);
         }

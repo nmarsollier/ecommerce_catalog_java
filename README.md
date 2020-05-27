@@ -78,7 +78,7 @@ Esto nos genera una carpeta www con la documentación, esta carpeta debe estar p
 
 Este servidor se configura con variables de entorno
 
-PORT = Puerto del servidor (3002)
+SERVER_PORT = Puerto del servidor (3002)
 AUTH_SERVICE_URL = Servidor Auth (http://localhost:3000)
 RABBIT_URL = Rabbit (localhost)
 MONGO_URL = Url de mongo (localhost)
