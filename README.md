@@ -92,7 +92,12 @@ También podemos usar docker en este repositorio, ejecutamos :
 
 ```bash
 docker build -t dev-catalog-java -f Dockerfile.dev .
+
+# Mac || Windows
 docker run -d --name dev-catalog-java -p 3002:3002 dev-catalog-java
+
+# Linux
+docker run --add-host host.docker.internal:172.17.0.1 -d --name dev-catalog-java -p 3002:3002 dev-catalog-java
 ```
 
 El contenedor se puede parar usando :
