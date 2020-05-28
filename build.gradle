@@ -36,3 +36,22 @@ sourceSets {
         }
     }
 }
+
+jar {
+    manifest {
+        attributes(
+                'Main-Class': 'Server'
+        )
+    }
+}
+
+task fatJar(type: Jar) {
+	manifest {
+        attributes 'Implementation-Title': 'Ecommerce Catalog Jar',
+        	'Implementation-Version': 'latest',
+        	'Main-Class': 'Server'
+    }
+    baseName = project.name + '-all'
+    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+    with jar
+}

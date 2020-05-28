@@ -8,9 +8,9 @@ ENV AUTH_SERVICE_URL http://host.docker.internal:3000
 WORKDIR /app
 
 RUN curl -L https://github.com/nmarsollier/ecommerce_catalog_java/tarball/master | tar xz --strip=1
-RUN gradle build
+RUN gradle build fatJar
 
 # Puerto de Catalog Service
 EXPOSE 3002
 
-CMD ["gradle","run"]
+CMD java -jar ./build/libs/catalog_java-all.jar
