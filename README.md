@@ -86,28 +86,21 @@ WWW_PATH = Path documentación (www)
 
 Este archivo permite configurar parámetros del servidor, ver ejemplos en config-example.json.
 
+
 ## Docker
 
-También podemos usar docker en este repositorio, ejecutamos :
+### Build
 
 ```bash
-docker build -t dev-catalog-java -f Dockerfile.dev .
+docker build --no-cache -t dev-catalog-java .
+```
 
-# Mac || Windows
-docker run -d --name dev-catalog-java -p 3002:3002 dev-catalog-java
+### El contenedor
+
+```bash
+# Mac | Windows
+docker run -it --name dev-catalog-java -p 3002:3002 -v $PWD:/app dev-catalog-java
 
 # Linux
-docker run --add-host host.docker.internal:172.17.0.1 -d --name dev-catalog-java -p 3002:3002 dev-catalog-java
-```
-
-El contenedor se puede parar usando :
-
-```bash
-docker stop dev-catalog-java
-```
-
-Se vuelve a levantar usando
-
-```bash
-docker start dev-catalog-java
+docker run -it --add-host host.docker.internal:172.17.0.1 --name dev-catalog-java -p 3002:3002 -v $PWD:/app dev-catalog-java
 ```
