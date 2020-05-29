@@ -99,8 +99,8 @@ docker build --no-cache -t dev-catalog-java .
 
 ```bash
 # Mac | Windows
-docker run -it --name dev-catalog-java -p 3002:3002 -v $PWD:/app dev-catalog-java
+docker run -it --name dev-catalog-java -p 3002:3002 -p 4002:4002 -v $PWD:/app dev-catalog-java
 
 # Linux
-docker run -it --add-host host.docker.internal:172.17.0.1 --name dev-catalog-java -p 3002:3002 -v $PWD:/app dev-catalog-java
+docker run -it --add-host host.docker.internal:172.17.0.1 --name dev-catalog-java -p 3002:3002 -p 4002:4002 -v $PWD:/app dev-catalog-java
 ```
