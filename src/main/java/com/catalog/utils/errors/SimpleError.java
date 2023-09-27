@@ -7,7 +7,7 @@ import com.google.gson.annotations.SerializedName;
 /**
  * Es un error simple que se puede serializar como Json.
  */
-public class SimpleError extends Error implements JsonError {
+public class SimpleError extends Exception implements JsonError {
     private static final long serialVersionUID = 1L;
 
     @SkipSerialization

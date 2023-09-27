@@ -10,7 +10,7 @@ import java.util.ArrayList;
  * Un error de validaciones de atributos de una clase.
  * Estos errores se pueden serializar como Json.
  */
-public class ValidationError extends Error implements JsonError {
+public class ValidationError extends Exception implements JsonError {
     private static final long serialVersionUID = 1L;
 
     @SkipSerialization

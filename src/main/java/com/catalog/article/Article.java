@@ -4,12 +4,8 @@ import com.catalog.article.vo.ArticleData;
 import com.catalog.article.vo.NewData;
 import com.catalog.utils.errors.ValidationError;
 import com.catalog.utils.validator.Validator;
-import org.bson.codecs.pojo.annotations.BsonProperty;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
-import org.springframework.data.mongodb.core.mapping.Field;
-import org.springframework.data.mongodb.core.mapping.FieldType;
-import org.springframework.data.mongodb.core.mapping.MongoId;
 
 import java.util.Date;
 
@@ -19,21 +15,18 @@ import java.util.Date;
 @Document
 public class Article {
     @Id
-    public String id;
+    String id;
 
-    public String name;
-    public String description;
-    public String image;
+    String name;
+    String description;
+    String image;
+    double price;
+    int stock;
 
-    public double price;
+    Date updated = new Date();
+    Date created = new Date();
 
-    public int stock;
-
-    public Date updated = new Date();
-
-    public Date created = new Date();
-
-    public boolean enabled = true;
+    boolean enabled = true;
 
     /**
      * Crea un nuevo articulo
@@ -104,7 +97,7 @@ public class Article {
      * Obtiene una representación interna de los valores.
      * Preserva la inmutabilidad de la entidad.
      */
-    public ArticleData toArticleData() {
+    public ArticleData data() {
         ArticleData data = new ArticleData();
         data.id = this.id;
 

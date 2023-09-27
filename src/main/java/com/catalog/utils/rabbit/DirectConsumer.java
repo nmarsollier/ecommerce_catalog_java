@@ -15,11 +15,11 @@ import java.util.logging.Logger;
  * Tanto el consumer como el publisher deben compartir estos mismos datos.
  */
 public class DirectConsumer {
-    private Env env;
+    private final Env env;
 
-    private String exchange;
-    private String queue;
-    private Map<String, EventProcessor> listeners = new HashMap<>();
+    private final String exchange;
+    private final String queue;
+    private final Map<String, EventProcessor> listeners = new HashMap<>();
 
     public DirectConsumer(Env env, String exchange, String queue) {
         this.env = env;
