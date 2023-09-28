@@ -1,14 +1,13 @@
 package com.catalog.utils.rabbit;
 
-import com.catalog.utils.gson.Builder;
-import com.catalog.utils.gson.JsonSerializable;
-import com.catalog.utils.validator.Required;
+import com.catalog.utils.gson.GsonTools;
 import com.google.gson.annotations.SerializedName;
+import jakarta.validation.constraints.NotEmpty;
 
-public class RabbitEvent implements JsonSerializable {
+public class RabbitEvent {
     // tipo de mensaje enviado
     @SerializedName("type")
-    @Required
+    @NotEmpty
     public String type;
 
     // Version del protocolo
@@ -25,15 +24,10 @@ public class RabbitEvent implements JsonSerializable {
 
     // El body del mensaje
     @SerializedName("message")
-    @Required
+    @NotEmpty
     public Object message;
 
     public static RabbitEvent fromJson(String json) {
-        return Builder.gson().fromJson(json, RabbitEvent.class);
-    }
-
-    @Override
-    public String toJson() {
-        return Builder.gson().toJson(this);
+        return GsonTools.gson().fromJson(json, RabbitEvent.class);
     }
 }

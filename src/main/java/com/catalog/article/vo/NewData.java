@@ -1,46 +1,35 @@
 package com.catalog.article.vo;
 
-import com.catalog.utils.gson.Builder;
-import com.catalog.utils.gson.JsonSerializable;
-import com.catalog.utils.validator.MaxLen;
-import com.catalog.utils.validator.MinLen;
-import com.catalog.utils.validator.MinValue;
-import com.catalog.utils.validator.Required;
+import com.catalog.utils.gson.GsonTools;
 import com.google.gson.annotations.SerializedName;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.Pattern;
 
 /**
  * Objeto valor para crear un articulo nuevo.
  */
-public class NewData implements JsonSerializable {
+public class NewData {
     @SerializedName("name")
-    @Required()
-    @MinLen(1)
-    @MaxLen(60)
+    @Pattern(regexp = "^.{1,50}$", message = "Entre 1 y 50 caracteres.")
     public String name;
 
     @SerializedName("description")
-    @MaxLen(2048)
+    @Pattern(regexp = "^.{0,2048}$", message = "Valor muy largo.")
     public String description;
 
     @SerializedName("image")
-    @MinLen(30)
-    @MaxLen(40)
+    @Pattern(regexp = "^.{0,40}$", message = "Entre 1 y 40 caracteres.")
     public String image;
 
-    @MinValue(0)
+    @Min(value = 0, message = "Debe ser positivo.")
     @SerializedName("price")
     public double price;
 
     @SerializedName("stock")
-    @MinValue(0)
+    @Min(value = 0, message = "Debe ser positivo.")
     public int stock;
 
     public static NewData fromJson(String json) {
-        return Builder.gson().fromJson(json, NewData.class);
-    }
-
-    @Override
-    public String toJson() {
-        return Builder.gson().toJson(this);
+        return GsonTools.gson().fromJson(json, NewData.class);
     }
 }

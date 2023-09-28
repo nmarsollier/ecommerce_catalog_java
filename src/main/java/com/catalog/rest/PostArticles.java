@@ -4,21 +4,21 @@ import com.catalog.article.Article;
 import com.catalog.article.ArticleRepository;
 import com.catalog.article.vo.ArticleData;
 import com.catalog.article.vo.NewData;
-import com.catalog.security.TokenService;
+import com.catalog.security.ValidateAdminUser;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 @CrossOrigin
 @RestController
 @RequestMapping(value = "/v1")
+@Validated
 public class PostArticles {
     @Autowired
     ArticleRepository repository;
-
-    @Autowired
-    TokenService tokenService;
 
     /**
      * @api {post} /v1/articles/ Crear Artículo
@@ -53,11 +53,9 @@ public class PostArticles {
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     public ArticleData addArticle(
-            @RequestHeader(HttpHeaders.AUTHORIZATION) String auth,
-            @RequestBody NewData newArticle
+            @ValidateAdminUser @RequestHeader(HttpHeaders.AUTHORIZATION) String auth,
+            @Valid @RequestBody NewData newArticle
     ) {
-        tokenService.validateAdmin(auth);
-
         Article article = Article.newArticle(newArticle);
         repository.save(article);
 

@@ -1,45 +1,36 @@
 package com.catalog.article.vo;
 
-import com.catalog.utils.gson.Builder;
-import com.catalog.utils.gson.JsonSerializable;
-import com.catalog.utils.validator.MaxLen;
-import com.catalog.utils.validator.MinLen;
-import com.catalog.utils.validator.Required;
 import com.google.gson.annotations.SerializedName;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.Pattern;
 
 /**
  * Objeto valor para artículos.
  */
-public class ArticleData implements JsonSerializable {
+public class ArticleData {
     @SerializedName("_id")
     public String id;
 
     @SerializedName("name")
-    @Required()
-    @MinLen(1)
-    @MaxLen(60)
+    @Pattern(regexp = "^.{1,50}$", message = "Entre 1 y 50 caracteres.")
     public String name;
 
     @SerializedName("description")
-    @MaxLen(2048)
+    @Pattern(regexp = "^.{0,2048}$", message = "Valor muy largo.")
     public String description;
 
     @SerializedName("image")
-    @MinLen(30)
-    @MaxLen(40)
+    @Pattern(regexp = "^.{0,40}$", message = "Entre 1 y 50 caracteres.")
     public String image;
 
     @SerializedName("price")
+    @Min(value = 0, message = "Debe ser positivo.")
     public double price;
 
     @SerializedName("stock")
+    @Min(value = 0, message = "Debe ser positivo.")
     public int stock;
 
     @SerializedName("enabled")
     public boolean enabled = true;
-
-    @Override
-    public String toJson() {
-        return Builder.gson().toJson(this);
-    }
 }

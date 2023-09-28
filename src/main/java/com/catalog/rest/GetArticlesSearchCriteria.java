@@ -1,5 +1,6 @@
 package com.catalog.rest;
 
+import com.catalog.article.Article;
 import com.catalog.article.ArticleRepository;
 import com.catalog.article.vo.ArticleData;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,7 +49,7 @@ public class GetArticlesSearchCriteria {
     ) {
         return repository.findWithCriteria(escapeForRegex(criteria))
                 .stream()
-                .map(article -> article.data())
+                .map(Article::data)
                 .collect(Collectors.toList());
     }
 

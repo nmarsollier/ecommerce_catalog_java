@@ -1,7 +1,7 @@
 package com.catalog.security;
 
-import com.catalog.utils.errors.SimpleError;
-import com.catalog.utils.server.Env;
+import com.catalog.utils.errors.UnauthorizedError;
+import com.catalog.utils.server.EnvironmentVars;
 import io.micrometer.common.util.StringUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -22,24 +22,24 @@ import org.springframework.stereotype.Service;
 @Service
 public class TokenService {
     @Autowired
-    Env env;
+    EnvironmentVars environmentVars;
 
-    static ExpiringMap<String, User> map = new ExpiringMap<>(60 * 60, 60 * 5);
+    static final ExpiringMap<String, User> map = new ExpiringMap<>(60 * 60, 60 * 5);
 
-    public void validateAdmin(String token) throws SimpleError {
+    public void validateAdmin(String token) {
         validate(token);
         User cachedUser = map.get(token);
         if (cachedUser == null) {
-            throw new SimpleError(401, "Unauthorized");
+            throw new UnauthorizedError();
         }
         if (!contains(cachedUser.permissions, "admin")) {
-            throw new SimpleError(401, "Unauthorized");
+            throw new UnauthorizedError();
         }
     }
 
-    public void validate(String token) throws SimpleError {
+    public void validate(String token) {
         if (StringUtils.isBlank(token)) {
-            throw new SimpleError(401, "Unauthorized");
+            throw new UnauthorizedError();
         }
 
         User cachedUser = map.get(token);
@@ -49,7 +49,7 @@ public class TokenService {
 
         User user = retrieveUser(token);
         if (user == null) {
-            throw new SimpleError(401, "Unauthorized");
+            throw new UnauthorizedError();
         }
         map.put(token, user);
     }
@@ -60,7 +60,7 @@ public class TokenService {
 
     private User retrieveUser(String token) {
         HttpClient client = HttpClientBuilder.create().build();
-        HttpGet request = new HttpGet(env.envData.securityServerUrl + "/v1/users/current");
+        HttpGet request = new HttpGet(environmentVars.envData.securityServerUrl + "/v1/users/current");
         request.addHeader("Authorization", token);
         HttpResponse response;
         try {

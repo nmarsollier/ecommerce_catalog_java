@@ -1,34 +1,47 @@
 package com.catalog.utils.rabbit;
 
-import com.catalog.utils.server.Env;
-import com.catalog.utils.validator.Validator;
+import com.catalog.utils.errors.ValidatorService;
+import com.catalog.utils.server.CatalogLogger;
+import com.catalog.utils.server.EnvironmentVars;
 import com.rabbitmq.client.*;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.config.ConfigurableBeanFactory;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * Escuchar en una cola direct es recibir un mensaje directo,
  * Necesitamos un exchange y un queue especifico para enviar correctamente el mensaje.
  * Tanto el consumer como el publisher deben compartir estos mismos datos.
  */
+@Service
+@Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class DirectConsumer {
-    private final Env env;
+    @Autowired
+    EnvironmentVars environmentVars;
 
-    private final String exchange;
-    private final String queue;
+    @Autowired
+    CatalogLogger logger;
+
+    @Autowired
+    ValidatorService validator;
+
+    private String exchange;
+    private String queue;
     private final Map<String, EventProcessor> listeners = new HashMap<>();
 
-    public DirectConsumer(Env env, String exchange, String queue) {
-        this.env = env;
+    public DirectConsumer init(String exchange, String queue) {
         this.exchange = exchange;
         this.queue = queue;
+        return this;
     }
 
-    public void addProcessor(String event, EventProcessor listener) {
+    public DirectConsumer addProcessor(String event, EventProcessor listener) {
         listeners.put(event, listener);
+        return this;
     }
 
     /**
@@ -49,7 +62,7 @@ public class DirectConsumer {
     public void start() {
         try {
             ConnectionFactory factory = new ConnectionFactory();
-            factory.setHost(env.envData.rabbitServerUrl);
+            factory.setHost(environmentVars.envData.rabbitServerUrl);
             Connection connection = factory.newConnection();
             Channel channel = connection.createChannel();
 
@@ -60,16 +73,16 @@ public class DirectConsumer {
 
             new Thread(() -> {
                 try {
-                    Logger.getLogger("RabbitMQ").log(Level.INFO, "RabbitMQ Escuchando " + queue);
+                    logger.info("RabbitMQ Escuchando " + queue);
 
                     channel.basicConsume(queue, true, new EventConsumer(channel));
                 } catch (Exception e) {
-                    Logger.getLogger("RabbitMQ").log(Level.SEVERE, "RabbitMQ ", e);
+                    logger.error("RabbitMQ ", e);
                     startDelayed();
                 }
             }).start();
         } catch (Exception e) {
-            Logger.getLogger("RabbitMQ").log(Level.SEVERE, "RabbitMQ ", e);
+            logger.error("RabbitMQ ", e);
             startDelayed();
         }
     }
@@ -86,19 +99,17 @@ public class DirectConsumer {
                                    byte[] body) {
             try {
                 RabbitEvent event = RabbitEvent.fromJson(new String(body));
-                Validator.validate(event);
+                validator.validate(event);
 
                 EventProcessor l = listeners.get(event.type);
                 if (l != null) {
-                    Logger.getLogger("RabbitMQ").log(Level.INFO, "RabbitMQ Consume article-data : " + event.type);
+                    logger.info("RabbitMQ Consume article-data : " + event.type);
 
                     l.process(event);
                 }
             } catch (Exception e) {
-                Logger.getLogger("RabbitMQ").log(Level.SEVERE, "RabbitMQ ", e);
+                logger.error("RabbitMQ ", e);
             }
         }
     }
-
-    ;
 }

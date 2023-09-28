@@ -1,7 +1,7 @@
 package com.catalog.utils.errors;
 
+import com.catalog.utils.gson.GsonTools;
 import com.catalog.utils.gson.SkipSerialization;
-import com.google.gson.Gson;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.ArrayList;
@@ -10,14 +10,13 @@ import java.util.ArrayList;
  * Un error de validaciones de atributos de una clase.
  * Estos errores se pueden serializar como Json.
  */
-public class ValidationError extends Exception implements JsonError {
-    private static final long serialVersionUID = 1L;
+public class ValidationError extends Error {
 
     @SkipSerialization
     public int statusCode = 400;
 
     @SerializedName("messages")
-    ArrayList<ValidationMessage> messages = new ArrayList<>();
+    final ArrayList<ValidationMessage> messages = new ArrayList<>();
 
     public ValidationError() {
 
@@ -28,7 +27,7 @@ public class ValidationError extends Exception implements JsonError {
     }
 
     public boolean isEmpty() {
-        return messages.size() == 0;
+        return messages.isEmpty();
     }
 
     public ValidationError addPath(String path, String message) {
@@ -37,29 +36,31 @@ public class ValidationError extends Exception implements JsonError {
     }
 
     public String toJson() {
-        SerializedMessage msg = new SerializedMessage();
-        msg.messages = messages;
-        return new Gson().toJson(msg);
+        return GsonTools.toJson(new SerializedMessage(messages));
     }
 
-    class ValidationMessage {
-        @SerializedName("path")
-        String path;
-        @SerializedName("message")
-        String message;
-
+    static class ValidationMessage {
         ValidationMessage(String path, String message) {
             this.path = path;
             this.message = message;
         }
+
+        @SerializedName("path")
+        final String path;
+        @SerializedName("message")
+        final String message;
+
     }
 
-    class SerializedMessage {
+    static class SerializedMessage {
         @SerializedName("messages")
-        ArrayList<ValidationMessage> messages = new ArrayList<>();
+        final ArrayList<ValidationMessage> messages;
+
+        SerializedMessage(ArrayList<ValidationMessage> messages) {
+            this.messages = messages;
+        }
     }
 
-    @Override
     public int statusCode() {
         return statusCode;
     }

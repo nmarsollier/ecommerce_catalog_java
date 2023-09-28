@@ -3,22 +3,22 @@ package com.catalog.rabbit;
 import com.catalog.security.TokenService;
 import com.catalog.utils.rabbit.FanoutConsumer;
 import com.catalog.utils.rabbit.RabbitEvent;
-import com.catalog.utils.server.Env;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
 public class ConsumeLogout {
-    @Autowired
-    Env env;
 
     @Autowired
     TokenService tokenService;
 
+    @Autowired
+    FanoutConsumer fanoutConsumer;
+
     public void init() {
-        FanoutConsumer fanoutConsumer = new FanoutConsumer(env, "auth");
-        fanoutConsumer.addProcessor("logout", this::processLogout);
-        fanoutConsumer.start();
+        fanoutConsumer.init("auth")
+                .addProcessor("logout", this::processLogout)
+                .start();
     }
 
     /**

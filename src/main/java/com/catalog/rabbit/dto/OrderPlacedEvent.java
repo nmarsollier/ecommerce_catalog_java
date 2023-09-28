@@ -1,8 +1,9 @@
 package com.catalog.rabbit.dto;
 
-import com.catalog.utils.gson.Builder;
-import com.catalog.utils.validator.Required;
+import com.catalog.utils.gson.GsonTools;
 import com.google.gson.annotations.SerializedName;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotEmpty;
 
 public class OrderPlacedEvent {
     @SerializedName("orderId")
@@ -14,15 +15,15 @@ public class OrderPlacedEvent {
 
     public static class Article {
         @SerializedName("articleId")
-        @Required
+        @NotEmpty(message = "No puede esta vacio")
         public String articleId;
 
         @SerializedName("quantity")
-        @Required
+        @Min(value = 1, message = "Debe ser positivo")
         public int quantity;
     }
 
     public static OrderPlacedEvent fromJson(String json) {
-        return Builder.gson().fromJson(json, OrderPlacedEvent.class);
+        return GsonTools.gson().fromJson(json, OrderPlacedEvent.class);
     }
 }

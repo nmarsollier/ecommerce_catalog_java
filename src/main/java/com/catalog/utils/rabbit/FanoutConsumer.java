@@ -1,29 +1,43 @@
 package com.catalog.utils.rabbit;
 
-import com.catalog.utils.server.Env;
-import com.catalog.utils.validator.Validator;
+import com.catalog.utils.errors.ValidatorService;
+import com.catalog.utils.server.CatalogLogger;
+import com.catalog.utils.server.EnvironmentVars;
 import com.rabbitmq.client.*;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.config.ConfigurableBeanFactory;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * Las colas fanout son un broadcast, no necesitan queue, solo exchange que es donde se publican
  */
+@Service
+@Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class FanoutConsumer {
-    private Env env;
-    private String exchange;
-    private Map<String, EventProcessor> listeners = new HashMap<>();
+    @Autowired
+    EnvironmentVars environmentVars;
 
-    public FanoutConsumer(Env env, String exchange) {
-        this.env = env;
+    @Autowired
+    CatalogLogger logger;
+
+    @Autowired
+    ValidatorService validator;
+
+    private String exchange;
+    private final Map<String, EventProcessor> listeners = new HashMap<>();
+
+    public FanoutConsumer init(String exchange) {
         this.exchange = exchange;
+        return this;
     }
 
-    public void addProcessor(String event, EventProcessor listener) {
+    public FanoutConsumer addProcessor(String event, EventProcessor listener) {
         listeners.put(event, listener);
+        return this;
     }
 
     /**
@@ -44,7 +58,7 @@ public class FanoutConsumer {
     public void start() {
         try {
             ConnectionFactory factory = new ConnectionFactory();
-            factory.setHost(env.envData.rabbitServerUrl);
+            factory.setHost(environmentVars.envData.rabbitServerUrl);
             Connection connection = factory.newConnection();
             Channel channel = connection.createChannel();
 
@@ -55,7 +69,7 @@ public class FanoutConsumer {
 
             new Thread(() -> {
                 try {
-                    Logger.getLogger("RabbitMQ").log(Level.INFO, "RabbitMQ Fanout Conectado");
+                    logger.info("RabbitMQ Fanout Conectado");
 
                     Consumer consumer = new DefaultConsumer(channel) {
                         @Override
@@ -65,27 +79,27 @@ public class FanoutConsumer {
                                                    byte[] body) {
                             try {
                                 RabbitEvent event = RabbitEvent.fromJson(new String(body));
-                                Validator.validate(event);
+                                validator.validate(event);
 
                                 EventProcessor eventConsumer = listeners.get(event.type);
                                 if (eventConsumer != null) {
-                                    Logger.getLogger("RabbitMQ").log(Level.INFO, "RabbitMQ Consume " + event.type);
+                                    logger.info("RabbitMQ Consume " + event.type);
 
                                     eventConsumer.process(event);
                                 }
                             } catch (Exception e) {
-                                Logger.getLogger("RabbitMQ").log(Level.SEVERE, "RabbitMQ Logout", e);
+                                logger.error("RabbitMQ Logout", e);
                             }
                         }
                     };
                     channel.basicConsume(queueName, true, consumer);
                 } catch (Exception e) {
-                    Logger.getLogger("RabbitMQ").log(Level.INFO, "RabbitMQ ArticleValidation desconectado");
+                    logger.info("RabbitMQ ArticleValidation desconectado");
                     startDelayed();
                 }
             }).start();
         } catch (Exception e) {
-            Logger.getLogger("RabbitMQ").log(Level.INFO, "RabbitMQ ArticleValidation desconectado");
+            logger.error("RabbitMQ ArticleValidation desconectado", e);
             startDelayed();
         }
     }

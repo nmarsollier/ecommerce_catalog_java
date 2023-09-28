@@ -3,7 +3,6 @@ package com.catalog.rabbit;
 import com.catalog.rabbit.dto.EventArticleExist;
 import com.catalog.utils.rabbit.DirectPublisher;
 import com.catalog.utils.rabbit.RabbitEvent;
-import com.catalog.utils.server.Env;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -12,7 +11,7 @@ import org.springframework.stereotype.Service;
 
 public class PublishArticleValidation {
     @Autowired
-    Env env;
+    DirectPublisher directPublisher;
 
     /**
      * @api {direct} cart/article-exist Validación de Artículos
@@ -33,6 +32,6 @@ public class PublishArticleValidation {
         eventToSend.type = "article-exist";
         eventToSend.message = send;
 
-        DirectPublisher.publish(env, exchange, queue, eventToSend);
+        directPublisher.publish(exchange, queue, eventToSend);
     }
 }

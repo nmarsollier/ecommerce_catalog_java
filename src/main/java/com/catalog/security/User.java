@@ -1,6 +1,6 @@
 package com.catalog.security;
 
-import com.catalog.utils.gson.Builder;
+import com.catalog.utils.gson.GsonTools;
 import com.google.gson.annotations.SerializedName;
 
 public class User {
@@ -14,6 +14,6 @@ public class User {
     public String[] permissions;
 
     public static User fromJson(String json) {
-        return Builder.gson().fromJson(json, User.class);
+        return GsonTools.gson().fromJson(json, User.class);
     }
 }

@@ -3,14 +3,13 @@ package com.catalog.rabbit;
 import com.catalog.rabbit.dto.EventArticleData;
 import com.catalog.utils.rabbit.DirectPublisher;
 import com.catalog.utils.rabbit.RabbitEvent;
-import com.catalog.utils.server.Env;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
 public class PublishArticleData {
     @Autowired
-    Env env;
+    DirectPublisher directPublisher;
 
     /**
      * @api {direct} cart/article-exist Validación de Articulos
@@ -33,6 +32,6 @@ public class PublishArticleData {
         eventToSend.type = "article-data";
         eventToSend.message = send;
 
-        DirectPublisher.publish(env, exchange, queue, eventToSend);
+        directPublisher.publish(exchange, queue, eventToSend);
     }
 }

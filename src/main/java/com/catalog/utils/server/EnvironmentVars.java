@@ -1,10 +1,11 @@
 package com.catalog.utils.server;
 
+import com.google.gson.annotations.SerializedName;
 import org.springframework.stereotype.Service;
 
 @Service
-public class Env {
-    public EnvData envData;
+public class EnvironmentVars {
+    public final EnvData envData;
 
     {
         envData = new EnvData();
@@ -25,5 +26,16 @@ public class Env {
         if (wwwPath != null && !wwwPath.isEmpty()) {
             envData.staticLocation = wwwPath;
         }
+    }
+
+    public static class EnvData {
+        @SerializedName("securityServerUrl")
+        public String securityServerUrl = "http://localhost:3000";
+        @SerializedName("rabbitServerUrl")
+        public String rabbitServerUrl = "localhost";
+        @SerializedName("databaseUrl")
+        public String databaseUrl = "localhost";
+        @SerializedName("staticLocation")
+        public String staticLocation = "www";
     }
 }

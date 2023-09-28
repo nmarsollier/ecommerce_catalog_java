@@ -1,13 +1,16 @@
 package com.catalog.utils.rabbit;
 
-import com.catalog.utils.server.Env;
-import com.catalog.utils.validator.Validator;
+import com.catalog.utils.errors.ValidatorService;
+import com.catalog.utils.server.CatalogLogger;
+import com.catalog.utils.server.EnvironmentVars;
 import com.rabbitmq.client.*;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.config.ConfigurableBeanFactory;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * La cola topic permite que varios consumidores escuchen el mismo evento
@@ -16,23 +19,34 @@ import java.util.logging.Logger;
  * queue permite distribuir la carga de los mensajes entre distintos consumers, los consumers con el mismo queue name
  * comparten la carga de procesamiento de mensajes, es importante que se defina el queue
  */
+@Service
+@Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class TopicConsumer {
-    private Env env;
+    @Autowired
+    EnvironmentVars environmentVars;
 
-    private String exchange;
-    private String queue;
-    private String topic;
-    private Map<String, EventProcessor> listeners = new HashMap<>();
+    @Autowired
+    final ValidatorService validator = new ValidatorService();
 
-    public TopicConsumer(Env env, String exchange, String queue, String topic) {
-        this.env = env;
+    @Autowired
+    CatalogLogger logger;
+
+    String exchange;
+    String queue;
+    String topic;
+    private final Map<String, EventProcessor> listeners = new HashMap<>();
+
+
+    public TopicConsumer init(String exchange, String queue, String topic) {
         this.exchange = exchange;
         this.queue = queue;
         this.topic = topic;
+        return this;
     }
 
-    public void addProcessor(String event, EventProcessor listener) {
+    public TopicConsumer addProcessor(String event, EventProcessor listener) {
         listeners.put(event, listener);
+        return this;
     }
 
     /**
@@ -53,7 +67,7 @@ public class TopicConsumer {
     public void start() {
         try {
             ConnectionFactory factory = new ConnectionFactory();
-            factory.setHost(env.envData.rabbitServerUrl);
+            factory.setHost(environmentVars.envData.rabbitServerUrl);
             Connection connection = factory.newConnection();
             Channel channel = connection.createChannel();
 
@@ -63,7 +77,7 @@ public class TopicConsumer {
 
             new Thread(() -> {
                 try {
-                    Logger.getLogger("RabbitMQ").log(Level.INFO, "RabbitMQ Topic Conectado");
+                    logger.info("RabbitMQ Topic Conectado");
 
                     Consumer consumer = new DefaultConsumer(channel) {
                         @Override
@@ -73,27 +87,27 @@ public class TopicConsumer {
                                                    byte[] body) {
                             try {
                                 RabbitEvent event = RabbitEvent.fromJson(new String(body));
-                                Validator.validate(event);
+                                validator.validate(event);
 
                                 EventProcessor eventConsumer = listeners.get(event.type);
                                 if (eventConsumer != null) {
-                                    Logger.getLogger("RabbitMQ").log(Level.INFO, "RabbitMQ Consume " + event.type);
+                                    logger.info("RabbitMQ Consume " + event.type);
 
                                     eventConsumer.process(event);
                                 }
                             } catch (Exception e) {
-                                Logger.getLogger("RabbitMQ").log(Level.SEVERE, "RabbitMQ Logout", e);
+                                logger.error("RabbitMQ Logout", e);
                             }
                         }
                     };
                     channel.basicConsume(queue, true, consumer);
                 } catch (Exception e) {
-                    Logger.getLogger("RabbitMQ").log(Level.INFO, "RabbitMQ ArticleValidation desconectado");
+                    logger.error("RabbitMQ ArticleValidation desconectado", e);
                     startDelayed();
                 }
             }).start();
         } catch (Exception e) {
-            Logger.getLogger("RabbitMQ").log(Level.INFO, "RabbitMQ ArticleValidation desconectado");
+            logger.error("RabbitMQ ArticleValidation desconectado", e);
             startDelayed();
         }
     }

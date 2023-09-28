@@ -1,26 +1,20 @@
 package com.catalog.rabbit.dto;
 
-import com.catalog.utils.gson.Builder;
-import com.catalog.utils.gson.JsonSerializable;
-import com.catalog.utils.validator.Required;
+import com.catalog.utils.gson.GsonTools;
 import com.google.gson.annotations.SerializedName;
+import jakarta.validation.constraints.NotEmpty;
 
-public class EventArticleExist implements JsonSerializable {
-    @Required
+public class EventArticleExist {
+    @NotEmpty(message = "No puede esta vacio")
     @SerializedName("articleId")
     public String articleId;
-    @Required
+    @NotEmpty(message = "No puede esta vacio")
     @SerializedName("referenceId")
     public String referenceId;
     @SerializedName("valid")
     public boolean valid;
 
     public static EventArticleExist fromJson(String json) {
-        return Builder.gson().fromJson(json, EventArticleExist.class);
-    }
-
-    @Override
-    public String toJson() {
-        return Builder.gson().toJson(this);
+        return GsonTools.gson().fromJson(json, EventArticleExist.class);
     }
 }

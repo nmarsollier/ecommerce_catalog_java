@@ -1,12 +1,13 @@
 package com.catalog.utils.rabbit;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-import com.catalog.utils.server.Env;
+import com.catalog.utils.gson.GsonTools;
+import com.catalog.utils.server.CatalogLogger;
+import com.catalog.utils.server.EnvironmentVars;
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 /**
  * La cola topic permite que varios consumidores escuchen el mismo evento
@@ -15,21 +16,28 @@ import com.rabbitmq.client.ConnectionFactory;
  * queue permite distribuir la carga de los mensajes entre distintos consumers, los consumers con el mismo queue name
  * comparten la carga de procesamiento de mensajes, es importante que se defina el queue
  */
+@Service
 public class TopicPublisher {
-    public static void publish(Env env, String exchange, String topic, RabbitEvent message) {
+    @Autowired
+    CatalogLogger logger;
+
+    @Autowired
+    EnvironmentVars environmentVars;
+
+    public void publish(String exchange, String topic, RabbitEvent message) {
         try {
             ConnectionFactory factory = new ConnectionFactory();
-            factory.setHost(env.envData.rabbitServerUrl);
+            factory.setHost(environmentVars.envData.rabbitServerUrl);
             Connection connection = factory.newConnection();
             Channel channel = connection.createChannel();
 
             channel.exchangeDeclare(exchange, "topic");
 
-            channel.basicPublish(exchange, topic, null, message.toJson().getBytes());
+            channel.basicPublish(exchange, topic, null, GsonTools.toJson(message).getBytes());
 
-            Logger.getLogger("RabbitMQ").log(Level.INFO, "RabbitMQ Emit " + message.type);
+            logger.info("RabbitMQ Emit " + message.type);
         } catch (Exception e) {
-            Logger.getLogger("RabbitMQ").log(Level.SEVERE, "RabbitMQ no se pudo encolar " + message.type, e);
+            logger.error("RabbitMQ no se pudo encolar " + message.type, e);
         }
     }
 }

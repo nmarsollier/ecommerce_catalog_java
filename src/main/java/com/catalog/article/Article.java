@@ -2,8 +2,8 @@ package com.catalog.article;
 
 import com.catalog.article.vo.ArticleData;
 import com.catalog.article.vo.NewData;
-import com.catalog.utils.errors.ValidationError;
-import com.catalog.utils.validator.Validator;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Min;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -31,9 +31,7 @@ public class Article {
     /**
      * Crea un nuevo articulo
      */
-    public static Article newArticle(NewData data) throws ValidationError {
-        Validator.validate(data);
-
+    public static Article newArticle(NewData data) {
         Article article = new Article();
 
         article.name = data.name;
@@ -48,9 +46,7 @@ public class Article {
     /**
      * Actualiza la descripción de un articulo.
      */
-    public void updateDescription(NewData data) throws ValidationError {
-        Validator.validate(data);
-
+    public void updateDescription(NewData data) {
         this.name = data.name;
         this.description = data.description;
         this.image = data.image;
@@ -60,11 +56,7 @@ public class Article {
     /**
      * Actualiza el precio de un articulo.
      */
-    public void updatePrice(double price) throws ValidationError {
-        if (price < 0) {
-            throw new ValidationError().addPath("price", "Inválido");
-        }
-
+    public void updatePrice(double price) {
         this.price = price;
         this.updated = new Date();
     }
@@ -72,11 +64,7 @@ public class Article {
     /**
      * Actualiza el stock actual de un articulo.
      */
-    public void updateStock(int stock) throws ValidationError {
-        if (stock < 0) {
-            throw new ValidationError().addPath("stock", "Inválido");
-        }
-
+    public void updateStock(@Valid @Min(0) int stock) {
         this.stock = stock;
         this.updated = new Date();
     }

@@ -14,7 +14,7 @@ repositories {
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter-data-mongodb")
     implementation("org.springframework.boot:spring-boot-starter-web")
-
+    implementation("org.springframework.boot:spring-boot-starter-validation")
 
     implementation("com.google.code.gson:gson:2.8.9")
     implementation("com.rabbitmq:amqp-client:5.4.0")

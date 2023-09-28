@@ -6,17 +6,10 @@ import com.google.gson.annotations.SerializedName;
 /**
  * Es un error simple que se puede serializar como Json.
  */
-public class SimpleError extends Error {
-
-    @SerializedName("error")
-    final String error;
-
-    public SimpleError(String error) {
-        this.error = error;
-    }
+public class UnauthorizedError extends Error {
 
     public String toJson() {
-        return GsonTools.toJson(new SerializedMessage(error));
+        return GsonTools.toJson(new SerializedMessage("Unauthorized"));
     }
 
     static class SerializedMessage {
