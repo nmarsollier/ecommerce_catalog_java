@@ -1,6 +1,5 @@
 package com.catalog.utils.errors;
 
-import com.catalog.utils.gson.GsonTools;
 import com.google.gson.annotations.SerializedName;
 
 /**
@@ -15,11 +14,11 @@ public class SimpleError extends Error {
         this.error = error;
     }
 
-    public String toJson() {
-        return GsonTools.toJson(new SerializedMessage(error));
+    public SerializedMessage message() {
+        return new SerializedMessage(error);
     }
 
-    static class SerializedMessage {
+    public static class SerializedMessage {
         @SerializedName("error")
         final String error;
 

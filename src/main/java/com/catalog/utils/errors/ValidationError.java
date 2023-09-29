@@ -1,6 +1,5 @@
 package com.catalog.utils.errors;
 
-import com.catalog.utils.gson.GsonTools;
 import com.google.gson.annotations.SerializedName;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.data.util.Pair;
@@ -31,8 +30,8 @@ public class ValidationError extends Error {
         return this;
     }
 
-    public String toJson() {
-        return GsonTools.toJson(new SerializedMessage(messages));
+    public SerializedMessage message() {
+        return new SerializedMessage(messages);
     }
 
     public static class ValidationMessage {

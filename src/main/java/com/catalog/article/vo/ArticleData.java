@@ -1,5 +1,6 @@
 package com.catalog.article.vo;
 
+import com.catalog.utils.gson.GsonTools;
 import com.google.gson.annotations.SerializedName;
 
 /**
@@ -43,5 +44,9 @@ public final class ArticleData {
         this.price = price;
         this.stock = stock;
         this.enabled = enabled;
+    }
+
+    public String toJson() {
+        return GsonTools.toJson(this);
     }
 }

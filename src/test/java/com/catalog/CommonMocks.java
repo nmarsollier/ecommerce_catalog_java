@@ -7,14 +7,14 @@ public class CommonMocks {
     public static NewData newDataExample;
     public static Article articleExample;
 
-
     static {
-        newDataExample = new NewData();
-        newDataExample.name = "Article Name";
-        newDataExample.description = "Article Description";
-        newDataExample.image = "image";
-        newDataExample.price = 10.5;
-        newDataExample.stock = 20;
+        newDataExample = new NewData(
+                "Article Name",
+                "Article Description",
+                "image",
+                10.5,
+                20
+        );
 
         articleExample = Article.newArticle(
                 newDataExample.name,

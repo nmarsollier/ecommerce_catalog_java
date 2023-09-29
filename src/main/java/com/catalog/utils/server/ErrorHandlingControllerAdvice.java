@@ -21,18 +21,18 @@ class ErrorHandlingControllerAdvice {
     @ExceptionHandler(ConstraintViolationException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ResponseBody
-    String onConstraintValidationException(ConstraintViolationException e) {
+    ValidationError.SerializedMessage onConstraintValidationException(ConstraintViolationException e) {
         ValidationError error = new ValidationError();
         for (ConstraintViolation violation : e.getConstraintViolations()) {
             error.addPath(violation.getPropertyPath().toString(), violation.getMessage());
         }
-        return error.toJson();
+        return error.message();
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ResponseBody
-    String onMethodArgumentNotValidException(MethodArgumentNotValidException e) {
+    ValidationError.SerializedMessage onMethodArgumentNotValidException(MethodArgumentNotValidException e) {
         ValidationError error = new ValidationError();
         for (FieldError fieldError : e.getBindingResult().getFieldErrors()) {
             error.addPath(
@@ -40,27 +40,27 @@ class ErrorHandlingControllerAdvice {
                     StringTools.notNull(fieldError.getDefaultMessage(), "Invalid")
             );
         }
-        return error.toJson();
+        return error.message();
     }
 
     @ExceptionHandler(SimpleError.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ResponseBody
-    String onSimpleError(SimpleError error) {
-        return error.toJson();
+    SimpleError.SerializedMessage onSimpleError(SimpleError error) {
+        return error.message();
     }
 
     @ExceptionHandler(ValidationError.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ResponseBody
-    String onValidationError(ValidationError error) {
-        return error.toJson();
+    ValidationError.SerializedMessage onValidationError(ValidationError error) {
+        return error.message();
     }
 
     @ExceptionHandler(UnauthorizedError.class)
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     @ResponseBody
-    String onUnauthorizedError(UnauthorizedError error) {
-        return error.toJson();
+    UnauthorizedError.SerializedMessage onUnauthorizedError(UnauthorizedError error) {
+        return error.message();
     }
 }

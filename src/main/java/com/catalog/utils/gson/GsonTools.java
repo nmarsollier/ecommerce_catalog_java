@@ -10,18 +10,20 @@ import com.google.gson.GsonBuilder;
  */
 public class GsonTools {
     public static Gson gson() {
-        return new GsonBuilder().addSerializationExclusionStrategy(new ExclusionStrategy() {
+        return new GsonBuilder()
+                .addSerializationExclusionStrategy(new ExclusionStrategy() {
 
-            @Override
-            public boolean shouldSkipField(FieldAttributes f) {
-                return f.getAnnotation(SkipSerialization.class) != null;
-            }
+                    @Override
+                    public boolean shouldSkipField(FieldAttributes f) {
+                        return f.getAnnotation(SkipSerialization.class) != null;
+                    }
 
-            @Override
-            public boolean shouldSkipClass(Class<?> clazz) {
-                return false;
-            }
-        }).create();
+                    @Override
+                    public boolean shouldSkipClass(Class<?> clazz) {
+                        return false;
+                    }
+                })
+                .create();
     }
 
     public static String toJson(Object obj) {

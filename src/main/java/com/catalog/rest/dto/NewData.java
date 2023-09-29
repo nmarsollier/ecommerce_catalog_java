@@ -10,19 +10,27 @@ import jakarta.validation.constraints.NotEmpty;
 public class NewData {
     @SerializedName("name")
     @NotEmpty
-    public String name;
+    public final String name;
 
     @SerializedName("description")
-    public String description;
+    public final String description;
 
     @SerializedName("image")
-    public String image;
+    public final String image;
 
     @SerializedName("price")
-    public double price;
+    public final double price;
 
     @SerializedName("stock")
-    public int stock;
+    public final int stock;
+
+    public NewData(String name, String description, String image, double price, int stock) {
+        this.name = name;
+        this.description = description;
+        this.image = image;
+        this.price = price;
+        this.stock = stock;
+    }
 
     public static NewData fromJson(String json) {
         return GsonTools.gson().fromJson(json, NewData.class);

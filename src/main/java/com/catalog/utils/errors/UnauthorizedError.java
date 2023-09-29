@@ -1,6 +1,5 @@
 package com.catalog.utils.errors;
 
-import com.catalog.utils.gson.GsonTools;
 import com.google.gson.annotations.SerializedName;
 
 /**
@@ -8,11 +7,11 @@ import com.google.gson.annotations.SerializedName;
  */
 public class UnauthorizedError extends Error {
 
-    public String toJson() {
-        return GsonTools.toJson(new SerializedMessage("Unauthorized"));
+    public SerializedMessage message() {
+        return new SerializedMessage("Unauthorized");
     }
 
-    static class SerializedMessage {
+    public static class SerializedMessage {
         @SerializedName("error")
         final String error;
 
