@@ -1,4 +1,4 @@
-package com.catalog.utils.errors;
+package com.catalog.server;
 
 import jakarta.validation.Valid;
 import org.springframework.stereotype.Service;

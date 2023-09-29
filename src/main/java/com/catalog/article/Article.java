@@ -1,8 +1,7 @@
 package com.catalog.article;
 
-import com.catalog.article.vo.ArticleData;
+import com.catalog.article.dto.ArticleData;
 import com.catalog.utils.errors.Validate;
-import com.catalog.utils.gson.GsonTools;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.executable.ValidateOnExecution;
 import org.springframework.data.annotation.Id;

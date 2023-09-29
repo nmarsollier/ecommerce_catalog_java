@@ -1,4 +1,4 @@
-package com.catalog.utils.server;
+package com.catalog.server;
 
 import com.mongodb.ConnectionString;
 import com.mongodb.MongoClientSettings;

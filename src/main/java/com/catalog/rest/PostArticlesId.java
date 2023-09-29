@@ -2,7 +2,7 @@ package com.catalog.rest;
 
 import com.catalog.article.Article;
 import com.catalog.article.ArticleRepository;
-import com.catalog.article.vo.ArticleData;
+import com.catalog.article.dto.ArticleData;
 import com.catalog.rest.dto.NewData;
 import com.catalog.security.ValidateAdminUser;
 import com.catalog.utils.errors.NotFoundError;

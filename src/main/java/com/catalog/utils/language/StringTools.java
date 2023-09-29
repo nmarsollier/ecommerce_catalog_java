@@ -1,4 +1,4 @@
-package com.catalog.utils;
+package com.catalog.utils.language;
 
 import jakarta.validation.constraints.NotNull;
 

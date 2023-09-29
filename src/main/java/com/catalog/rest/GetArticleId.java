@@ -1,7 +1,7 @@
 package com.catalog.rest;
 
 import com.catalog.article.ArticleRepository;
-import com.catalog.article.vo.ArticleData;
+import com.catalog.article.dto.ArticleData;
 import com.catalog.utils.errors.NotFoundError;
 import com.catalog.utils.errors.ValidationError;
 import jakarta.validation.constraints.NotEmpty;

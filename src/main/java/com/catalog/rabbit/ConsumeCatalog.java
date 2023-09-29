@@ -2,16 +2,14 @@ package com.catalog.rabbit;
 
 import com.catalog.article.Article;
 import com.catalog.article.ArticleRepository;
-import com.catalog.article.vo.ArticleData;
+import com.catalog.article.dto.ArticleData;
 import com.catalog.rabbit.dto.EventArticleData;
 import com.catalog.rabbit.dto.EventArticleExist;
-import com.catalog.utils.errors.ValidationError;
-import com.catalog.utils.errors.ValidatorService;
+import com.catalog.server.ValidatorService;
 import com.catalog.utils.rabbit.DirectConsumer;
 import com.catalog.utils.rabbit.RabbitEvent;
-import com.catalog.utils.server.CatalogLogger;
+import com.catalog.server.CatalogLogger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Service;
 
 import java.util.NoSuchElementException;

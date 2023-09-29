@@ -2,8 +2,8 @@ package com.catalog.rest;
 
 import com.catalog.article.Article;
 import com.catalog.article.ArticleRepository;
-import com.catalog.article.vo.ArticleData;
-import com.catalog.utils.StringTools;
+import com.catalog.article.dto.ArticleData;
+import com.catalog.utils.language.StringTools;
 import jakarta.validation.constraints.NotEmpty;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;

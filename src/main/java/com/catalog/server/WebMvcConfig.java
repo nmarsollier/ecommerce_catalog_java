@@ -1,4 +1,4 @@
-package com.catalog.utils.server;
+package com.catalog.server;
 
 import com.catalog.utils.gson.GsonTools;
 import org.springframework.context.annotation.Configuration;

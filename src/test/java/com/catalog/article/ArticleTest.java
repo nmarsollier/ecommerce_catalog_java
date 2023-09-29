@@ -1,7 +1,7 @@
 package com.catalog.article;
 
 import com.catalog.CommonMocks;
-import com.catalog.article.vo.ArticleData;
+import com.catalog.article.dto.ArticleData;
 import com.catalog.rest.dto.NewData;
 import com.catalog.utils.errors.ValidationError;
 import org.junit.jupiter.api.Assertions;

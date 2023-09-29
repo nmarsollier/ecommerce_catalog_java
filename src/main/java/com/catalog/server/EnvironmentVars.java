@@ -1,4 +1,4 @@
-package com.catalog.utils.server;
+package com.catalog.server;
 
 import com.google.gson.annotations.SerializedName;
 import org.springframework.stereotype.Service;

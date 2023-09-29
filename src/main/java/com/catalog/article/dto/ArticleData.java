@@ -1,4 +1,4 @@
-package com.catalog.article.vo;
+package com.catalog.article.dto;
 
 import com.catalog.utils.gson.GsonTools;
 import com.google.gson.annotations.SerializedName;

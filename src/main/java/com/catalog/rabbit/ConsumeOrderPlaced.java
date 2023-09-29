@@ -1,14 +1,14 @@
 package com.catalog.rabbit;
 
 import com.catalog.article.ArticleRepository;
-import com.catalog.article.vo.ArticleData;
+import com.catalog.article.dto.ArticleData;
 import com.catalog.rabbit.dto.EventArticleData;
 import com.catalog.rabbit.dto.OrderPlacedEvent;
-import com.catalog.utils.errors.ValidatorService;
+import com.catalog.server.ValidatorService;
 import com.catalog.utils.rabbit.RabbitEvent;
 import com.catalog.utils.rabbit.TopicConsumer;
-import com.catalog.utils.server.CatalogLogger;
-import com.catalog.utils.server.EnvironmentVars;
+import com.catalog.server.CatalogLogger;
+import com.catalog.server.EnvironmentVars;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

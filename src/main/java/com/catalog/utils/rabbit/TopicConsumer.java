@@ -1,8 +1,8 @@
 package com.catalog.utils.rabbit;
 
-import com.catalog.utils.errors.ValidatorService;
-import com.catalog.utils.server.CatalogLogger;
-import com.catalog.utils.server.EnvironmentVars;
+import com.catalog.server.ValidatorService;
+import com.catalog.server.CatalogLogger;
+import com.catalog.server.EnvironmentVars;
 import com.rabbitmq.client.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;

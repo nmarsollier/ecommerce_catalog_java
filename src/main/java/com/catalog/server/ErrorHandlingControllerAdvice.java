@@ -1,6 +1,6 @@
-package com.catalog.utils.server;
+package com.catalog.server;
 
-import com.catalog.utils.StringTools;
+import com.catalog.utils.language.StringTools;
 import com.catalog.utils.errors.SimpleError;
 import com.catalog.utils.errors.UnauthorizedError;
 import com.catalog.utils.errors.ValidationError;

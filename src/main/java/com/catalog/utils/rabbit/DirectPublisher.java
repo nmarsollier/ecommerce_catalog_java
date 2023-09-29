@@ -1,8 +1,8 @@
 package com.catalog.utils.rabbit;
 
 import com.catalog.utils.gson.GsonTools;
-import com.catalog.utils.server.CatalogLogger;
-import com.catalog.utils.server.EnvironmentVars;
+import com.catalog.server.CatalogLogger;
+import com.catalog.server.EnvironmentVars;
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
