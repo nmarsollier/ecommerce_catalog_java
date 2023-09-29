@@ -1,9 +1,9 @@
 package com.catalog.rest;
 
-import com.catalog.article.Article;
 import com.catalog.article.ArticleRepository;
 import com.catalog.security.ValidateAdminUser;
-import com.catalog.utils.errors.ValidationError;
+import com.catalog.utils.errors.NotFoundError;
+import jakarta.validation.constraints.NotEmpty;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -33,13 +33,12 @@ public class DeleteArticlesId {
     )
     public String deleteArticle(
             @ValidateAdminUser @RequestHeader(HttpHeaders.AUTHORIZATION) String auth,
-            @PathVariable("articleId") String articleId
+            @NotEmpty @PathVariable("articleId") String articleId
     ) {
-        Article article = repository.findById(articleId).orElseThrow(
-                () -> new ValidationError(404).addPath("articleId", "Not found")
-        );
-        article.disable();
-        repository.save(article);
+        repository.findById(articleId).orElseThrow(
+                () -> new NotFoundError("articleId")
+        ).disable().storeIn(repository);
+
         return "";
     }
 }

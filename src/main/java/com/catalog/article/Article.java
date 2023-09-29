@@ -1,9 +1,9 @@
 package com.catalog.article;
 
 import com.catalog.article.vo.ArticleData;
-import com.catalog.article.vo.NewData;
-import jakarta.validation.Valid;
-import jakarta.validation.constraints.Min;
+import com.catalog.utils.errors.Validate;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.executable.ValidateOnExecution;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -31,54 +31,78 @@ public class Article {
     /**
      * Crea un nuevo articulo
      */
-    public static Article newArticle(NewData data) {
-        Article article = new Article();
-
-        article.name = data.name;
-        article.description = data.description;
-        article.image = data.image;
-        article.price = data.price;
-        article.stock = data.stock;
-
-        return article;
+    public static Article newArticle(
+            String name,
+            String description,
+            String image,
+            double price,
+            int stock
+    ) {
+        return new Article()
+                .updateDetails(name, description, image)
+                .updatePrice(price)
+                .updateStock(stock);
     }
 
     /**
      * Actualiza la descripción de un articulo.
      */
-    public void updateDescription(NewData data) {
-        this.name = data.name;
-        this.description = data.description;
-        this.image = data.image;
+    public Article updateDetails(@NotNull String name, @NotNull String description, @NotNull String image) {
+        Validate.notEmpty("name", name);
+        Validate.minLen("name", name, 1);
+        Validate.maxLen("name", name, 50);
+        Validate.maxLen("description", name, 2048);
+        Validate.maxLen("image", name, 40);
+
+        this.name = name;
+        this.description = description;
+        this.image = image;
         this.updated = new Date();
+
+        return this;
     }
 
     /**
      * Actualiza el precio de un articulo.
      */
-    public void updatePrice(double price) {
+    @ValidateOnExecution
+    public Article updatePrice(double price) {
+        Validate.min("price", price, 0);
+
         this.price = price;
         this.updated = new Date();
+
+        return this;
     }
 
     /**
      * Actualiza el stock actual de un articulo.
      */
-    public void updateStock(@Valid @Min(0) int stock) {
+    public Article updateStock(int stock) {
+        Validate.min("stock", stock, 0);
+
         this.stock = stock;
         this.updated = new Date();
+
+        return this;
     }
 
     /**
      * Deshabilita el articulo para que no se pueda usar mas
      */
-    public void disable() {
+    public Article disable() {
         this.enabled = false;
         this.updated = new Date();
+        return this;
     }
 
-    public boolean enabled() {
+    public boolean isEnabled() {
         return enabled;
+    }
+
+    public Article storeIn(ArticleRepository repository) {
+        repository.save(this);
+        return this;
     }
 
     /**
@@ -86,17 +110,14 @@ public class Article {
      * Preserva la inmutabilidad de la entidad.
      */
     public ArticleData data() {
-        ArticleData data = new ArticleData();
-        data.id = this.id;
-
-        data.name = this.name;
-        data.description = this.description;
-        data.image = this.image;
-
-        data.price = this.price;
-        data.stock = this.stock;
-
-        data.enabled = this.enabled;
-        return data;
+        return new ArticleData(
+                this.id,
+                this.name,
+                this.description,
+                this.image,
+                this.price,
+                this.stock,
+                this.enabled
+        );
     }
 }

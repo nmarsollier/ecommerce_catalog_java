@@ -3,7 +3,7 @@ package com.catalog.rest;
 import com.catalog.article.Article;
 import com.catalog.article.ArticleRepository;
 import com.catalog.article.vo.ArticleData;
-import com.catalog.article.vo.NewData;
+import com.catalog.rest.dto.NewData;
 import com.catalog.security.ValidateAdminUser;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,9 +56,12 @@ public class PostArticles {
             @ValidateAdminUser @RequestHeader(HttpHeaders.AUTHORIZATION) String auth,
             @Valid @RequestBody NewData newArticle
     ) {
-        Article article = Article.newArticle(newArticle);
-        repository.save(article);
-
-        return article.data();
+        return Article.newArticle(
+                newArticle.name,
+                newArticle.description,
+                newArticle.image,
+                newArticle.price,
+                newArticle.stock
+        ).storeIn(repository).data();
     }
 }

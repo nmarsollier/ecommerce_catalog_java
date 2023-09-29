@@ -3,6 +3,8 @@ package com.catalog.rest;
 import com.catalog.article.Article;
 import com.catalog.article.ArticleRepository;
 import com.catalog.article.vo.ArticleData;
+import com.catalog.utils.StringTools;
+import jakarta.validation.constraints.NotEmpty;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
@@ -45,28 +47,11 @@ public class GetArticlesSearchCriteria {
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     public List<ArticleData> searchArticles(
-            @PathVariable("criteria") String criteria
+            @NotEmpty @PathVariable("criteria") String criteria
     ) {
-        return repository.findWithCriteria(escapeForRegex(criteria))
+        return repository.findWithCriteria(StringTools.escapeForRegex(criteria))
                 .stream()
                 .map(Article::data)
                 .collect(Collectors.toList());
-    }
-
-    private static String escapeForRegex(String input) {
-        return input.replace("\\", "\\\\")
-                .replace(".", "\\.")
-                .replace("*", "\\*")
-                .replace("+", "\\+")
-                .replace("?", "\\?")
-                .replace("{", "\\{")
-                .replace("}", "\\}")
-                .replace("(", "\\(")
-                .replace(")", "\\)")
-                .replace("[", "\\[")
-                .replace("]", "\\]")
-                .replace("^", "\\^")
-                .replace("$", "\\$")
-                .replace("|", "\\|");
     }
 }

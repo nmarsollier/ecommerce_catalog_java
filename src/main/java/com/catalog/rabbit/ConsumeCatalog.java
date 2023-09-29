@@ -5,13 +5,16 @@ import com.catalog.article.ArticleRepository;
 import com.catalog.article.vo.ArticleData;
 import com.catalog.rabbit.dto.EventArticleData;
 import com.catalog.rabbit.dto.EventArticleExist;
+import com.catalog.utils.errors.ValidationError;
 import com.catalog.utils.errors.ValidatorService;
 import com.catalog.utils.rabbit.DirectConsumer;
 import com.catalog.utils.rabbit.RabbitEvent;
 import com.catalog.utils.server.CatalogLogger;
-import jakarta.validation.ConstraintViolationException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Service;
+
+import java.util.NoSuchElementException;
 
 @Service
 public class ConsumeCatalog {
@@ -59,11 +62,10 @@ public class ConsumeCatalog {
         try {
             System.out.println("RabbitMQ Consume article-exist : " + exist.articleId);
 
-            validator.validate(exist);
             Article article = articleRepository.findById(exist.articleId).orElseThrow();
-            exist.valid = article.enabled();
+            exist.valid = article.isEnabled();
             publishArticleValidation.publish(event.exchange, event.queue, exist);
-        } catch (ConstraintViolationException validation) {
+        } catch (NoSuchElementException validation) {
             exist.valid = false;
             publishArticleValidation.publish(event.exchange, event.queue, exist);
         } catch (Exception article) {
@@ -90,9 +92,11 @@ public class ConsumeCatalog {
         try {
             System.out.println("RabbitMQ Consume article-data : " + exist.articleId);
 
-            validator.validate(exist);
+            ArticleData article = articleRepository
+                    .findById(exist.articleId)
+                    .orElseThrow()
+                    .data();
 
-            ArticleData article = articleRepository.findById(exist.articleId).orElseThrow().data();
             EventArticleData data = new EventArticleData();
             data.articleId = article.id;
             data.price = article.price;
@@ -101,7 +105,7 @@ public class ConsumeCatalog {
             data.valid = article.enabled;
 
             publishArticleData.publish(event.exchange, event.queue, data);
-        } catch (ConstraintViolationException validation) {
+        } catch (NoSuchElementException validation) {
             EventArticleData data = new EventArticleData();
             data.articleId = exist.articleId;
             data.referenceId = exist.referenceId;

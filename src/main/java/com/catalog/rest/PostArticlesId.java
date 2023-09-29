@@ -3,9 +3,9 @@ package com.catalog.rest;
 import com.catalog.article.Article;
 import com.catalog.article.ArticleRepository;
 import com.catalog.article.vo.ArticleData;
-import com.catalog.article.vo.NewData;
+import com.catalog.rest.dto.NewData;
 import com.catalog.security.ValidateAdminUser;
-import com.catalog.utils.errors.ValidationError;
+import com.catalog.utils.errors.NotFoundError;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -59,9 +59,14 @@ public class PostArticlesId {
             @Valid @RequestBody NewData descriptionData
     ) {
         Article article = repository.findById(articleId).orElseThrow(
-                () -> new ValidationError(404).addPath("articleId", "Not found")
+                () -> new NotFoundError("articleId")
         );
-        article.updateDescription(descriptionData);
+
+        article.updateDetails(
+                descriptionData.name,
+                descriptionData.description,
+                descriptionData.image
+        );
 
         article.updatePrice(descriptionData.price);
         article.updateStock(descriptionData.stock);

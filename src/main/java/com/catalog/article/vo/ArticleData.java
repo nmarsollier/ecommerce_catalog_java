@@ -1,36 +1,47 @@
 package com.catalog.article.vo;
 
 import com.google.gson.annotations.SerializedName;
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.Pattern;
 
 /**
- * Objeto valor para artículos.
+ * Representacion publica del articulo
  */
-public class ArticleData {
+public final class ArticleData {
     @SerializedName("_id")
-    public String id;
+    public final String id;
 
     @SerializedName("name")
-    @Pattern(regexp = "^.{1,50}$", message = "Entre 1 y 50 caracteres.")
-    public String name;
+    public final String name;
 
     @SerializedName("description")
-    @Pattern(regexp = "^.{0,2048}$", message = "Valor muy largo.")
-    public String description;
+    public final String description;
 
     @SerializedName("image")
-    @Pattern(regexp = "^.{0,40}$", message = "Entre 1 y 50 caracteres.")
-    public String image;
+    public final String image;
 
     @SerializedName("price")
-    @Min(value = 0, message = "Debe ser positivo.")
-    public double price;
+    public final double price;
 
     @SerializedName("stock")
-    @Min(value = 0, message = "Debe ser positivo.")
-    public int stock;
+    public final int stock;
 
     @SerializedName("enabled")
-    public boolean enabled = true;
+    public final boolean enabled;
+
+    public ArticleData(
+            String id,
+            String name,
+            String description,
+            String image,
+            double price,
+            int stock,
+            boolean enabled
+    ) {
+        this.id = id;
+        this.name = name;
+        this.description = description;
+        this.image = image;
+        this.price = price;
+        this.stock = stock;
+        this.enabled = enabled;
+    }
 }

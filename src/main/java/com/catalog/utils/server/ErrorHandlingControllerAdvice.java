@@ -1,5 +1,6 @@
 package com.catalog.utils.server;
 
+import com.catalog.utils.StringTools;
 import com.catalog.utils.errors.SimpleError;
 import com.catalog.utils.errors.UnauthorizedError;
 import com.catalog.utils.errors.ValidationError;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 @ControllerAdvice
 class ErrorHandlingControllerAdvice {
 
+    @SuppressWarnings("rawtypes")
     @ExceptionHandler(ConstraintViolationException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ResponseBody
@@ -33,7 +35,10 @@ class ErrorHandlingControllerAdvice {
     String onMethodArgumentNotValidException(MethodArgumentNotValidException e) {
         ValidationError error = new ValidationError();
         for (FieldError fieldError : e.getBindingResult().getFieldErrors()) {
-            error.addPath(fieldError.getField(), fieldError.getDefaultMessage());
+            error.addPath(
+                    fieldError.getField(),
+                    StringTools.notNull(fieldError.getDefaultMessage(), "Invalid")
+            );
         }
         return error.toJson();
     }

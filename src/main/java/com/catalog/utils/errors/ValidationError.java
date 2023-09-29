@@ -1,8 +1,9 @@
 package com.catalog.utils.errors;
 
 import com.catalog.utils.gson.GsonTools;
-import com.catalog.utils.gson.SkipSerialization;
 import com.google.gson.annotations.SerializedName;
+import jakarta.validation.constraints.NotNull;
+import org.springframework.data.util.Pair;
 
 import java.util.ArrayList;
 
@@ -11,19 +12,14 @@ import java.util.ArrayList;
  * Estos errores se pueden serializar como Json.
  */
 public class ValidationError extends Error {
-
-    @SkipSerialization
-    public int statusCode = 400;
-
     @SerializedName("messages")
-    final ArrayList<ValidationMessage> messages = new ArrayList<>();
+    public final ArrayList<ValidationMessage> messages = new ArrayList<>();
 
-    public ValidationError() {
-
-    }
-
-    public ValidationError(int statusCode) {
-        this.statusCode = statusCode;
+    @SafeVarargs
+    public ValidationError(@NotNull Pair<String, String>... pathMessage) {
+        for (Pair<String, String> m : pathMessage) {
+            addPath(m.getFirst(), m.getSecond());
+        }
     }
 
     public boolean isEmpty() {
@@ -39,29 +35,24 @@ public class ValidationError extends Error {
         return GsonTools.toJson(new SerializedMessage(messages));
     }
 
-    static class ValidationMessage {
+    public static class ValidationMessage {
         ValidationMessage(String path, String message) {
             this.path = path;
             this.message = message;
         }
 
         @SerializedName("path")
-        final String path;
+        public final String path;
         @SerializedName("message")
-        final String message;
-
+        public final String message;
     }
 
-    static class SerializedMessage {
+    public static class SerializedMessage {
         @SerializedName("messages")
-        final ArrayList<ValidationMessage> messages;
+        public final ArrayList<ValidationMessage> messages;
 
         SerializedMessage(ArrayList<ValidationMessage> messages) {
             this.messages = messages;
         }
-    }
-
-    public int statusCode() {
-        return statusCode;
     }
 }

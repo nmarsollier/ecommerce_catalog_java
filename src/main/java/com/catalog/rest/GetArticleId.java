@@ -2,7 +2,9 @@ package com.catalog.rest;
 
 import com.catalog.article.ArticleRepository;
 import com.catalog.article.vo.ArticleData;
+import com.catalog.utils.errors.NotFoundError;
 import com.catalog.utils.errors.ValidationError;
+import jakarta.validation.constraints.NotEmpty;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
@@ -38,10 +40,10 @@ public class GetArticleId {
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     public ArticleData getArticle(
-            @PathVariable("articleId") String articleId
+            @NotEmpty @PathVariable("articleId") String articleId
     ) throws ValidationError {
         return repository.findById(articleId).orElseThrow(
-                () -> new ValidationError(404).addPath("articleId", "Not found")
+                () -> new NotFoundError("articleId")
         ).data();
     }
 }
