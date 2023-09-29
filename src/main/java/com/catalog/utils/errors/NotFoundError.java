@@ -5,6 +5,6 @@ package com.catalog.utils.errors;
  */
 public class NotFoundError extends ValidationError {
     public NotFoundError(String field) {
-        super.addPath(field, "Not found.");
+        addPath(field, "Not found.");
     }
 }
