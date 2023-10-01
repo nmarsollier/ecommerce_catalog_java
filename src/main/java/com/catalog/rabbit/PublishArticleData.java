@@ -1,6 +1,6 @@
 package com.catalog.rabbit;
 
-import com.catalog.rabbit.dto.EventArticleData;
+import com.catalog.rabbit.dto.PublishArticleDataEvent;
 import com.catalog.utils.rabbit.DirectPublisher;
 import com.catalog.utils.rabbit.RabbitEvent;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +27,7 @@ public class PublishArticleData {
      * }
      * }
      */
-    public void publish(String exchange, String queue, EventArticleData send) {
+    public void publish(String exchange, String queue, PublishArticleDataEvent send) {
         RabbitEvent eventToSend = new RabbitEvent();
         eventToSend.type = "article-data";
         eventToSend.message = send;

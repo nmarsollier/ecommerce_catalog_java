@@ -1,14 +1,13 @@
 package com.catalog.rabbit;
 
+import com.catalog.article.Article;
 import com.catalog.article.ArticleRepository;
-import com.catalog.article.dto.ArticleData;
-import com.catalog.rabbit.dto.EventArticleData;
-import com.catalog.rabbit.dto.OrderPlacedEvent;
+import com.catalog.rabbit.dto.ConsumedOrderPlacedEvent;
+import com.catalog.rabbit.dto.PublishArticleDataEvent;
+import com.catalog.server.CatalogLogger;
 import com.catalog.server.ValidatorService;
 import com.catalog.utils.rabbit.RabbitEvent;
 import com.catalog.utils.rabbit.TopicConsumer;
-import com.catalog.server.CatalogLogger;
-import com.catalog.server.EnvironmentVars;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -22,9 +21,6 @@ public class ConsumeOrderPlaced {
 
     @Autowired
     CatalogLogger logger;
-
-    @Autowired
-    EnvironmentVars environmentVars;
 
     @Autowired
     ArticleRepository articleRepository;
@@ -60,29 +56,24 @@ public class ConsumeOrderPlaced {
      */
     void processOrderPlaced(RabbitEvent event) {
         try {
-            OrderPlacedEvent exist = OrderPlacedEvent.fromJson(event.message.toString());
+            ConsumedOrderPlacedEvent exist = ConsumedOrderPlacedEvent.fromJson(event.message.toString());
             System.out.println("RabbitMQ Consume order-placed : " + exist.orderId);
 
             validator.validate(exist);
 
             Arrays.stream(exist.articles).forEach(a -> {
                 try {
-                    ArticleData article = articleRepository.findById(a.articleId).orElseThrow().data();
+                    Article article = articleRepository.findById(a.articleId).orElseThrow();
+                    article.decrementStock(a.quantity).storeIn(articleRepository);
 
-                    EventArticleData data = new EventArticleData();
-                    data.articleId = article.id;
-                    data.price = article.price;
-                    data.referenceId = exist.orderId;
-                    data.stock = article.stock;
-                    data.valid = article.enabled;
+                    PublishArticleDataEvent
+                            .fromArticleData(article.data(), exist.orderId)
+                            .publishIn(publishArticleData, event.exchange, event.queue);
 
-                    publishArticleData.publish(event.exchange, event.queue, data);
                 } catch (NoSuchElementException validation) {
-                    EventArticleData data = new EventArticleData();
-                    data.articleId = a.articleId;
-                    data.referenceId = exist.orderId;
-                    data.valid = false;
-                    publishArticleData.publish(event.exchange, event.queue, data);
+                    PublishArticleDataEvent
+                            .fromOrderPlacedEvent(a, exist.orderId)
+                            .publishIn(publishArticleData, event.exchange, event.queue);
                 }
             });
         } catch (Exception e) {

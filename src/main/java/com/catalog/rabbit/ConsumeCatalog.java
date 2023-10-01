@@ -3,12 +3,12 @@ package com.catalog.rabbit;
 import com.catalog.article.Article;
 import com.catalog.article.ArticleRepository;
 import com.catalog.article.dto.ArticleData;
-import com.catalog.rabbit.dto.EventArticleData;
-import com.catalog.rabbit.dto.EventArticleExist;
+import com.catalog.rabbit.dto.PublishArticleDataEvent;
+import com.catalog.rabbit.dto.ArticleExistEvent;
+import com.catalog.server.CatalogLogger;
 import com.catalog.server.ValidatorService;
 import com.catalog.utils.rabbit.DirectConsumer;
 import com.catalog.utils.rabbit.RabbitEvent;
-import com.catalog.server.CatalogLogger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -56,16 +56,20 @@ public class ConsumeCatalog {
      * }
      */
     void processArticleExist(RabbitEvent event) {
-        EventArticleExist exist = EventArticleExist.fromJson(event.message.toString());
+        ArticleExistEvent exist = ArticleExistEvent.fromJson(event.message.toString());
         try {
             System.out.println("RabbitMQ Consume article-exist : " + exist.articleId);
 
             Article article = articleRepository.findById(exist.articleId).orElseThrow();
-            exist.valid = article.isEnabled();
-            publishArticleValidation.publish(event.exchange, event.queue, exist);
+
+            ArticleExistEvent
+                    .fromEventArticleExist(exist, article.isEnabled())
+                    .publishIn(publishArticleValidation, event.exchange, event.queue);
+
         } catch (NoSuchElementException validation) {
-            exist.valid = false;
-            publishArticleValidation.publish(event.exchange, event.queue, exist);
+            ArticleExistEvent
+                    .fromEventArticleExist(exist, false)
+                    .publishIn(publishArticleValidation, event.exchange, event.queue);
         } catch (Exception article) {
             logger.error(article.toString(), article);
         }
@@ -86,7 +90,7 @@ public class ConsumeCatalog {
      * }
      */
     void processArticleData(RabbitEvent event) {
-        EventArticleExist exist = EventArticleExist.fromJson(event.message.toString());
+        ArticleExistEvent exist = ArticleExistEvent.fromJson(event.message.toString());
         try {
             System.out.println("RabbitMQ Consume article-data : " + exist.articleId);
 
@@ -95,21 +99,14 @@ public class ConsumeCatalog {
                     .orElseThrow()
                     .data();
 
-            EventArticleData data = new EventArticleData();
-            data.articleId = article.id;
-            data.price = article.price;
-            data.referenceId = exist.referenceId;
-            data.stock = article.stock;
-            data.valid = article.enabled;
+            PublishArticleDataEvent
+                    .fromArticleData(article, exist.referenceId)
+                    .publishIn(publishArticleData, event.exchange, event.queue);
 
-            publishArticleData.publish(event.exchange, event.queue, data);
         } catch (NoSuchElementException validation) {
-            EventArticleData data = new EventArticleData();
-            data.articleId = exist.articleId;
-            data.referenceId = exist.referenceId;
-            data.valid = false;
-
-            publishArticleData.publish(event.exchange, event.queue, data);
+            PublishArticleDataEvent
+                    .fromEventArticleExist(exist)
+                    .publishIn(publishArticleData, event.exchange, event.queue);
         } catch (Exception article) {
             logger.error(article.toString(), article);
         }

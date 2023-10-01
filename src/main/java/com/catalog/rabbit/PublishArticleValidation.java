@@ -1,6 +1,6 @@
 package com.catalog.rabbit;
 
-import com.catalog.rabbit.dto.EventArticleExist;
+import com.catalog.rabbit.dto.ArticleExistEvent;
 import com.catalog.utils.rabbit.DirectPublisher;
 import com.catalog.utils.rabbit.RabbitEvent;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +27,7 @@ public class PublishArticleValidation {
      * }
      * }
      */
-    public void publish(String exchange, String queue, EventArticleExist send) {
+    public void publish(String exchange, String queue, ArticleExistEvent send) {
         RabbitEvent eventToSend = new RabbitEvent();
         eventToSend.type = "article-exist";
         eventToSend.message = send;

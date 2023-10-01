@@ -7,7 +7,7 @@ import jakarta.validation.constraints.NotEmpty;
 /**
  * Objeto valor para crear un articulo nuevo.
  */
-public class NewData {
+public final class NewData {
     @SerializedName("name")
     @NotEmpty
     public final String name;

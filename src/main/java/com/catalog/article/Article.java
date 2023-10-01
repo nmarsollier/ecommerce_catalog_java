@@ -87,6 +87,16 @@ public class Article {
         return this;
     }
 
+    public Article decrementStock(int stock) {
+        int newStock = this.stock - stock;
+        Validate.min("stock", newStock, 0);
+
+        this.stock = newStock;
+        this.updated = new Date();
+
+        return this;
+    }
+
     /**
      * Deshabilita el articulo para que no se pueda usar mas
      */
