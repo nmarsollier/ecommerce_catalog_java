@@ -1,2 +1,2 @@
-rootProject.name = "ecommerce_catalog_java_2"
+rootProject.name = "ecommerce_catalog_java"
 
