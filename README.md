@@ -32,20 +32,27 @@ Ver tutorial de instalación en [ecommerce](https://github.com/nmarsollier/ecomm
 
 ### Java
 
-Java JDK 1.8  [oracle.com](http://www.oracle.com/technetwork/es/java/javase/downloads/index.html)
-
-Gradle [gradle.org](https://gradle.org/install/)
+Java Coretto 22
 
 Establecer las variables de entorno sujeridas en las instalaciones.
 Tanto los ejecutables de java, como gradle deben poder encontrarse en el path.
 
 ## Ejecución del servidor
 
+Lo mas facil es desde intelliJ ejecutar la clase CatalogApplication
+
 Se clona el repositorio en el directorio deseado.
 
-Nos paramos en la carpeta donde se encuentra el archivo build.gradle y ejecutamos :
+y se ejecuta :
+
 ```bash
-gradle run
+./gradlew clean build
+```
+
+Nos paramos en la carpeta donde se encuentra el archivo build.gradle y ejecutamos :
+
+```bash
+./gradlew run
 ```
 
 La primera vez que ejecute descarga las dependencias, puede tardar un momento.
