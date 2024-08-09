@@ -12,3 +12,5 @@ RUN gradle build
 
 # Puerto de Catalog Service
 EXPOSE 3002
+
+CMD gradle run
