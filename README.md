@@ -32,7 +32,9 @@ Ver tutorial de instalación en [ecommerce](https://github.com/nmarsollier/ecomm
 
 ### Java
 
-Java Coretto 22
+Java Coretto 21
+
+Debe estar java en el path y configurar la variable JAVA_HOME
 
 Establecer las variables de entorno sujeridas en las instalaciones.
 Tanto los ejecutables de java, como gradle deben poder encontrarse en el path.
